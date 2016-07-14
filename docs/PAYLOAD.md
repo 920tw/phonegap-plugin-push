@@ -1,3 +1,7 @@
+- [Overview](#overview)
+   - [Foreground Events](#push-message-arrives-with-app-in-foreground)
+   - [Background Events](#push-message-arrives-with-app-in-background)
+   - [Tap Events](#user-clicks-on-notification-in-notification-center)
 - [Android Behaviour](#android-behaviour)
   - [Images](#images)
   - [Sound](#sound)
@@ -10,6 +14,8 @@
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content-available: true](#use-of-content-available-true)
+  - [Visibility](#visibility-of-notifications)
+  - [Badges](#badges)
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
@@ -22,6 +28,37 @@
   - [Disabling the default processing of notifications by Windows](#disabling-the-default-processing-of-notifications-by-windows)
   - [Background Notifications](#background-notifications-2)
 
+
+# Overview
+
+The following flowchart attempts to give you a picture of what happens when a push message arrives on your device when you have an app using phonegap-plugin-push.
+
+![push-flowchart](https://cloud.githubusercontent.com/assets/353180/15752003/36b80afa-28ba-11e6-818b-c6f5f2966d8f.png)
+
+## Push message arrives with app in foreground
+
+- The push plugin receives the data from the remote push service and calls all of your `notification`  event handlers.
+- The message is *not* displayed in the devices notification center as that is not normal behaviour for Android or iOS.
+
+## Push message arrives with app in background
+
+- The push plugin receives the data from the remote push service and checks to see if there is a title or message in the data received. If there is then the message will be displayed in the devices notification center.
+- Then the push plugin checks to see if the app is running. If the user has killed the application then no further processing of the push data will occur.
+- If they app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
+- If `content-available` is set to `1` then the plugin calls all of your `notification` event handlers.
+
+## User clicks on notification in notification center
+
+- The app starts.
+- Then the plugin calls all of your `notification` event handlers.
+
+> Note: if the push payload contained `content-available: 1` then your `notification` event handler has already been called. It is up to you to handle the double event.
+
+Some ways to handle this *double* event are:
+
+- don't include title/message in the push so it doesn't show up in the shader.
+- send two pushes, one to be processed in the background the other to show up in the shade.
+- include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Android Behaviour
 
@@ -185,7 +222,43 @@ Produces the following notification.
 
 ## Sound
 
-For Android there are two special values for sound you can use. The first is `default` which will play the phones default notification sound. Then second is `ringtone` which will play the phones default ringtone sound.
+For Android there are three special values for sound you can use. The first is `default` which will play the phones default notification sound.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Default",
+    	"message": "Plays default notification sound",
+    	"soundname": "default"
+    }
+}
+```
+
+Then second is `ringtone` which will play the phones default ringtone sound.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Ringtone",
+    	"message": "Plays default ringtone sound",
+    	"soundname": "ringtone"
+    }
+}
+```
+The third is the empty string which will cause for the playing of sound to be skipped.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Silece",
+    	"message": "Skips playing any sound",
+    	"soundname": ""
+    }
+}
+```
 
 In order for your your notification to play a custom sound you will need to add the files to your Android project's `res/raw` directory. Then send the follow JSON from GCM:
 
@@ -475,7 +548,7 @@ Attribute | Type | Default | Description
 --------- | ---- | ------- | -----------
 `icon` | `string` | | Optional. The name of a drawable resource to use as the small-icon. The name should not include the extension.
 `title` | `string` | | Required. The label to display for the action button.
-`callback` | `string` | | Required. The function to be executed when the action button is pressed.
+`callback` | `string` | | Required. The function to be executed when the action button is pressed. The function must be accessible from the global namespace. If you provide `myCallback` then it amounts to calling `window.myCallback`. If you provide `app.myCallback` then there needs to be an object call `app`, with a function called `myCallback` accessible from the global namespace, i.e. `window.app.myCallback`.
 `foreground` | `boolean` | `true` | Optional. Whether or not to bring the app to the foreground when the action button is pressed.
 
 ## Led in Notifications
@@ -618,6 +691,7 @@ This will produce the following notification in your tray:
 
 ![2015-08-25 16 08 00](https://cloud.githubusercontent.com/assets/353180/9472260/3655fa7a-4b22-11e5-8d87-20528112de16.png)
 
+> Note: When the notification arrives you will see the title and message like normally. You will only see the picture when the notification is expanded. Once expanded not only will you see the picture but the message portion will disappear and you'll see the summary text portion.
 
 ## Background Notifications
 
@@ -656,7 +730,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
-or
+or if you want the payload to be delivered directly to your app without anything showing up in the notification center omit the tite/message from the payload like so:
 
 
 ```javascript
@@ -727,6 +801,74 @@ These phones have a particular quirk that when the app is force closed that you 
 - On your Huawei device go to Settings > Protected apps > check "My App" where.
 - On your Xiaomi makes sure your phone has the "Auto-start" property enabled for your app.
 
+
+## Visibility of Notifications
+
+You can set a visibility parameter for your notifications. Just add a `visibility` field in your notification. -1: secret, 0: private (default), 1: public. `Secret` shows only the most minimal information, excluding even the notification's icon. `Private` shows basic information about the existence of this notification, including its icon and the name of the app that posted it. The rest of the notification's details are not displayed. `Public` Shows the notification's full content.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "This is a maximum public Notification",
+    	"message": "This notification should appear in front of all others",
+    	"visibility": 1
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'This is a public Notification');
+message.addData('message', 'You should be able to read this notification on your lock screen');
+message.addData('visibility', 1);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
+```
+
+## Badges
+
+On Android not all launchers support badges. In order for us to set badges we use [ShortcutBadger](https://github.com/leolin310148/ShortcutBadger) in order to set the badge. Check out their website to see which launchers are supported.
+
+In order to set the badge number you will need to include the `badge` property in your push payload as below:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Badge Test",
+    	"message": "Badges, we don't need no stinking badges",
+    	"badge": 7
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', 'Badge Test');
+message.addData('message', 'Badges, we don\'t need no stinking badges');
+message.addData('badge', 7);
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+	if(err) console.error(err);
+	else 	console.log(response);
+});
+```
 
 # iOS Behaviour
 
@@ -946,4 +1088,3 @@ Here is an example of a sample toast notification payload containing the launch 
 ```
 
 This launch attribute string is passed on to the app as data.launchArgs through the on('notification') handler. It's important to note that due to the Windows platform design, the other visual payload is not available to the handler on cold start. So notification attributes like message, title etc. which are available through the on('notification') handler when the app is running, won't be available for background notifications.
-

@@ -1,5 +1,65 @@
 # Change Log
 
+## [1.7.4](https://github.com/phonegap/phonegap-plugin-push/tree/v1.7.4) (2016-07-09)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.3...v1.7.4)
+
+**Closed issues:**
+
+- FYI: Resumed iOS 10 Notifications results in an error (fix problem on iOS) [\#1002](https://github.com/phonegap/phonegap-plugin-push/issues/1002)
+
+
+## [1.7.3](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.3) (2016-07-06)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.2...1.7.3)
+
+**Closed issues:**
+
+- Implemented clearBadge for Android [\#1030](https://github.com/phonegap/phonegap-plugin-push/issues/1030)
+- update badge number even if the app is totally closed [\#1027](https://github.com/phonegap/phonegap-plugin-push/issues/1027)
+- Documentation issue of Android pictures push [\#1028](https://github.com/phonegap/phonegap-plugin-push/issues/1028)
+- [iOS] unregister for a topic: parameter is not consistent between ios/android [\#1029](https://github.com/phonegap/phonegap-plugin-push/issues/1029)
+- [doc] Error installing in IOS, version requirement: >=4.1.0 [\#1047](https://github.com/phonegap/phonegap-plugin-push/issues/1047)
+
+## [1.7.2](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.2) (2016-06-24)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.1...1.7.2)
+
+**Closed issues:**
+
+- FYI: Resumed iOS 10 Notifications results in an error [\#1002](https://github.com/phonegap/phonegap-plugin-push/issues/1002)
+
+## [1.7.1](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.1) (2016-06-17)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.7.0...1.7.1)
+
+**Closed issues:**
+
+- Update docs for Android badges [\#982](https://github.com/phonegap/phonegap-plugin-push/issues/982)
+- visibility not working [\#987](https://github.com/phonegap/phonegap-plugin-push/issues/982)
+- Revert pinning of support-v13 [\#983](https://github.com/phonegap/phonegap-plugin-push/issues/983)
+
+## [1.7.0](https://github.com/phonegap/phonegap-plugin-push/tree/1.7.0) (2016-06-06)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.4...1.7.0)
+
+**Closed issues:**
+
+- disable notification's sounds on a per notification basis [\#885](https://github.com/phonegap/phonegap-plugin-push/issues/885)
+- Android GCM Action Buttons lack of documentation [\#884](https://github.com/phonegap/phonegap-plugin-push/issues/884)
+- Android double on('notification') fired [\#828](https://github.com/phonegap/phonegap-plugin-push/issues/828)
+- Device should register, Push Notification should receive on IOS (IntelXDK) [\#926](https://github.com/phonegap/phonegap-plugin-push/issues/926)
+- Use cordova-ios 4.1.0 in Milestone 1.7.0 [\#751](https://github.com/phonegap/phonegap-plugin-push/issues/751)
+- Badge on android [\#190](https://github.com/phonegap/phonegap-plugin-push/issues/190)
+- JS error in Success callbackId: PushNotifiation###.. whenever a notification is sent to the device [\#824](https://github.com/phonegap/phonegap-plugin-push/issues/824)
+- coldstart flag always set to true if the app has been opened through an alert, on ios 9.3.1, plugin version 1.6.2 cordova 6.1.0 cordova ios 4.1.1 [\#795](https://github.com/phonegap/phonegap-plugin-push/issues/795)
+- Is there any way to clear notifications out from the app? [\#346](https://github.com/phonegap/phonegap-plugin-push/issues/346)
+- Show contents of notification when phone is locked [\#750](https://github.com/phonegap/phonegap-plugin-push/issues/750)
+- PushPlugin.m init() should send pending notification when js side is ready [\#658](https://github.com/phonegap/phonegap-plugin-push/issues/658)
+
+## [1.6.4](https://github.com/phonegap/phonegap-plugin-push/tree/1.6.4) (2016-05-24)
+[Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.3...1.6.4)
+
+**Closed issues:**
+
+- hasPermission() for windows [\#874](https://github.com/phonegap/phonegap-plugin-push/issues/874)
+- Latest Play store service breaks phonegap-plugin-push [\#909](https://github.com/phonegap/phonegap-plugin-push/issues/909)
+
 ## [1.6.3](https://github.com/phonegap/phonegap-plugin-push/tree/1.6.3) (2016-04-27)
 [Full Changelog](https://github.com/phonegap/phonegap-plugin-push/compare/1.6.2...1.6.3)
 

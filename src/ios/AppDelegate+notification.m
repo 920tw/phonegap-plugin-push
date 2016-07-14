@@ -200,6 +200,7 @@ static char coldstartKey;
         pushHandler.coldstart = [self.coldstart boolValue];
         pushHandler.notificationMessage = self.launchNotification;
         self.launchNotification = nil;
+        self.coldstart = [NSNumber numberWithBool:NO];
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
     }
 }
@@ -210,7 +211,7 @@ forRemoteNotification: (NSDictionary *) notification completionHandler: (void (^
 
     NSLog(@"Push Plugin handleActionWithIdentifier %@", identifier);
     NSMutableDictionary *userInfo = [notification mutableCopy];
-    [userInfo setObject:identifier forKey:@"callback"];
+    [userInfo setObject:identifier forKey:@"actionCallback"];
     NSLog(@"Push Plugin userInfo %@", userInfo);
 
     if (application.applicationState == UIApplicationStateActive) {
